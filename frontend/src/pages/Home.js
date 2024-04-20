@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom';
 
 export default function Home() {
@@ -39,8 +39,8 @@ export default function Home() {
 
             {
               users.map((user, index) => (
-                <tr>
-                  <th scope="row" key={index}>{index + 1}</th>
+                <tr key={user.id}>
+                  <th scope="row">{index + 1}</th>
                   <td>{user.name}</td>
                   <td>{user.birthDate}</td>
                   <td>
@@ -51,6 +51,7 @@ export default function Home() {
                 </tr>
               ))
             }
+
           </tbody>
         </table>
       </div>

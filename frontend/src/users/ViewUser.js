@@ -1,11 +1,12 @@
 import axios from "axios";
-import React, { useEffect,useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 export default function ViewUser() {
   const [user, setUser] = useState({
     name: "",
-    birthDate: ""
+    birthDate: "",
+    image: null 
   });
 
   const { id } = useParams();
@@ -16,8 +17,16 @@ export default function ViewUser() {
 
   const loadUser = async () => {
     const result = await axios.get(`http://localhost:8080/user/${id}`);
-    setUser(result.data);
+    const base64Image = btoa(
+      new Uint8Array(result.data.image.data).reduce(
+        (data, byte) => data + String.fromCharCode(byte),
+        ''
+      )
+    );
+    const imageUrl = `data:image/jpeg;base64,${base64Image}`;
+    setUser({ ...result.data, image: imageUrl });
   };
+  
 
   return (
     <div className="container">
@@ -36,6 +45,10 @@ export default function ViewUser() {
                 <li className="list-group-item">
                   <b>Data de nascimento: </b>
                   {user.birthDate}
+                </li>
+                <li className="list-group-item">
+                  <b>Imagem: </b>
+                  {user.image && <img src={user.image} alt="User" />}
                 </li>
               </ul>
             </div>

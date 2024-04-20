@@ -9,13 +9,18 @@ export default function EditUser() {
 
   const [user, setUser] = useState({
     name: "",
-    birthDate: ""
+    birthDate: "",
+    image: null  // Adicione um estado para a imagem
   });
 
-  const { name, birthDate } = user;
+  const { name, birthDate, image } = user;
 
   const onInputChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
+  };
+
+  const onImageChange = (e) => {
+    setUser({ ...user, image: e.target.files[0] });
   };
 
   useEffect(() => {
@@ -24,14 +29,33 @@ export default function EditUser() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    await axios.put(`http://localhost:8080/user/${id}`, user);
+
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('birthDate', birthDate);
+    formData.append('image', image);
+
+    await axios.put(`http://localhost:8080/user/${id}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
     navigate("/");
   };
 
   const loadUser = async () => {
-    const result = await axios.get(`http://localhost:8080/user/${id}`);
-    setUser(result.data);
-  };
+    try {
+        const result = await axios.get(`http://localhost:8080/user/${id}`);
+        const birthDate = new Date(result.data.birthDate);
+        const formattedBirthDate = birthDate.toISOString().split('T')[0];
+        const imageUrl = URL.createObjectURL(new Blob([result.data.image]));
+
+        setUser({ ...result.data, birthDate: formattedBirthDate, image: imageUrl });
+    } catch (error) {
+        console.error("Error loading user:", error);
+    }
+};
+
 
   return (
     <div className="container">
@@ -58,14 +82,31 @@ export default function EditUser() {
                 Data de nascimento
               </label>
               <input
-                type={"text"}
+                type={"date"}
                 className="form-control"
                 placeholder="Insira sua data de nascimento"
                 name="birthDate"
                 value={birthDate}
                 onChange={(e) => onInputChange(e)}
               />
-            </div>     
+            </div>
+            <div className="mb-3">
+              <label htmlFor="Image" className="form-label">
+                Imagem
+              </label>
+              <input
+                type="file"
+                className="form-control"
+                name="image"
+                onChange={(e) => onImageChange(e)}
+              />
+            </div>
+            {image && (
+              <div className="mb-3">
+                <label className="form-label">Imagem atual:</label>
+                <img src={image} alt="User" style={{ width: '100%', height: 'auto' }} />
+              </div>
+            )}
             <button type="submit" className="btn btn-outline-primary">
               Enviar
             </button>

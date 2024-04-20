@@ -2,7 +2,9 @@ package com.develcode.backend.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 
 @Entity
@@ -15,14 +17,18 @@ public class User {
     private String name;
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate birthDate;
+    @Lob
+    private byte[] image;
 
     public User() {
     }
 
-    public User(Long id, String name, LocalDate birthDate) {
+    public User(Long id, String name, LocalDate birthDate, byte[] image) {
         this.id = id;
         this.name = name;
         this.birthDate = birthDate;
+        this.image = image;
+
     }
 
     public Long getId() {
@@ -47,5 +53,17 @@ public class User {
 
     public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
+
+    public void setImage(MultipartFile file) throws IOException {
+        this.image = file.getBytes();
     }
 }
