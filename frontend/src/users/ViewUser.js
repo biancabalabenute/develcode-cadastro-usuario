@@ -1,11 +1,12 @@
 import axios from "axios";
-import React, { useEffect,useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 export default function ViewUser() {
   const [user, setUser] = useState({
     name: "",
-    birthDate: ""
+    birthDate: "",
+    image: null  // Adicione um estado para a imagem
   });
 
   const { id } = useParams();
@@ -17,6 +18,9 @@ export default function ViewUser() {
   const loadUser = async () => {
     const result = await axios.get(`http://localhost:8080/user/${id}`);
     setUser(result.data);
+    // Converta os bytes da imagem em uma URL de objeto
+    const imageUrl = URL.createObjectURL(new Blob([result.data.image]));
+    setUser({ ...result.data, image: imageUrl });
   };
 
   return (
@@ -36,6 +40,10 @@ export default function ViewUser() {
                 <li className="list-group-item">
                   <b>Data de nascimento: </b>
                   {user.birthDate}
+                </li>
+                <li className="list-group-item">
+                  <b>Imagem: </b>
+                  {user.image && <img src={user.image} alt="User" />}
                 </li>
               </ul>
             </div>
