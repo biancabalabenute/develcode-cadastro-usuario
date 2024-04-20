@@ -63,7 +63,6 @@ public class User {
         this.image = image;
     }
 
-    // Add a method to set the image from a MultipartFile
     public void setImage(MultipartFile file) throws IOException {
         this.image = file.getBytes();
     }

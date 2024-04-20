@@ -1,56 +1,68 @@
 package com.develcode.backend.models;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
-public class UserTest {
+@ExtendWith(MockitoExtension.class)
+class UserTest {
 
+    @InjectMocks
     private User user;
 
-    @BeforeEach
-    public void setUp() {
-        user = new User();
+    @Mock
+    private MultipartFile multipartFile;
+
+    @Test
+    void setImage_fromMultipartFile() throws IOException {
+        byte[] imageBytes = "test image".getBytes();
+
+        when(multipartFile.getBytes()).thenReturn(imageBytes);
+
+        user.setImage(multipartFile);
+
+        assertArrayEquals(imageBytes, user.getImage());
     }
 
     @Test
-    public void testIdGetterAndSetter() {
+    void constructorAndGetters() {
         Long id = 1L;
-        user.setId(id);
-        assertEquals(id, user.getId());
-    }
+        String name = "José";
+        LocalDate birthDate = LocalDate.of(1990, 5, 15);
+        byte[] imageBytes = "test image".getBytes();
 
-    @Test
-    public void testNameGetterAndSetter() {
-        String name = "Jose da Silva";
-        user.setName(name);
-        assertEquals(name, user.getName());
-    }
+        User newUser = new User(id, name, birthDate, imageBytes);
 
-    @Test
-    public void testBirthDateGetterAndSetter() {
-        LocalDate birthDate = LocalDate.of(1997, 5, 15);
-        user.setBirthDate(birthDate);
-        assertEquals(birthDate, user.getBirthDate());
-    }
-
-    @Test
-    public void testNoArgsConstructor() {
-        User newUser = new User();
-        assertNotNull(newUser);
-    }
-
-    @Test
-    public void testAllArgsConstructor() {
-        Long id = 1L;
-        String name = "Maria Rodrigues";
-        LocalDate birthDate = LocalDate.of(1985, 3, 20);
-        User newUser = new User(id, name, birthDate);
         assertEquals(id, newUser.getId());
         assertEquals(name, newUser.getName());
         assertEquals(birthDate, newUser.getBirthDate());
+        assertArrayEquals(imageBytes, newUser.getImage());
+    }
+
+    @Test
+    void settersAndGetters() {
+        Long id = 1L;
+        String name = "Maria";
+        LocalDate birthDate = LocalDate.of(1990, 5, 15);
+        byte[] imageBytes = "test image".getBytes();
+
+        user.setId(id);
+        user.setName(name);
+        user.setBirthDate(birthDate);
+        user.setImage(imageBytes);
+
+        assertEquals(id, user.getId());
+        assertEquals(name, user.getName());
+        assertEquals(birthDate, user.getBirthDate());
+        assertArrayEquals(imageBytes, user.getImage());
     }
 }

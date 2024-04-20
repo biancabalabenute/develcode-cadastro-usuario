@@ -6,7 +6,7 @@ export default function ViewUser() {
   const [user, setUser] = useState({
     name: "",
     birthDate: "",
-    image: null  // Adicione um estado para a imagem
+    image: null 
   });
 
   const { id } = useParams();
@@ -17,11 +17,16 @@ export default function ViewUser() {
 
   const loadUser = async () => {
     const result = await axios.get(`http://localhost:8080/user/${id}`);
-    setUser(result.data);
-    // Converta os bytes da imagem em uma URL de objeto
-    const imageUrl = URL.createObjectURL(new Blob([result.data.image]));
+    const base64Image = btoa(
+      new Uint8Array(result.data.image.data).reduce(
+        (data, byte) => data + String.fromCharCode(byte),
+        ''
+      )
+    );
+    const imageUrl = `data:image/jpeg;base64,${base64Image}`;
     setUser({ ...result.data, image: imageUrl });
   };
+  
 
   return (
     <div className="container">

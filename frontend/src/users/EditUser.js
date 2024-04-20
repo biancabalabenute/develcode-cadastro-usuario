@@ -44,14 +44,18 @@ export default function EditUser() {
   };
 
   const loadUser = async () => {
-    const result = await axios.get(`http://localhost:8080/user/${id}`);
-    // Formate a data de nascimento para "yyyy-MM-dd"
-    const birthDate = new Date(result.data.birthDate);
-    const formattedBirthDate = birthDate.toISOString().split('T')[0];
-    const imageUrl = URL.createObjectURL(new Blob([result.data.image]));
+    try {
+        const result = await axios.get(`http://localhost:8080/user/${id}`);
+        const birthDate = new Date(result.data.birthDate);
+        const formattedBirthDate = birthDate.toISOString().split('T')[0];
+        const imageUrl = URL.createObjectURL(new Blob([result.data.image]));
 
-    setUser({ ...result.data, birthDate: formattedBirthDate, image: imageUrl });
-  };
+        setUser({ ...result.data, birthDate: formattedBirthDate, image: imageUrl });
+    } catch (error) {
+        console.error("Error loading user:", error);
+    }
+};
+
 
   return (
     <div className="container">
