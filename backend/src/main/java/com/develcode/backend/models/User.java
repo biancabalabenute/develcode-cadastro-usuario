@@ -16,7 +16,7 @@ public class User {
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate birthDate;
 
-    private User() {
+    public User() {
     }
 
     public User(Long id, String name, LocalDate birthDate) {
