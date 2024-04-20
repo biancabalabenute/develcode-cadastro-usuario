@@ -6,9 +6,9 @@ export default function Navbar() {
     <div>
       <nav className="navbar navbar-expand-lg navbar-dark bg-success">
         <div className="container-fluid">
-          <a className="navbar-brand" href="#">
+          <Link className="navbar-brand" to="/">
             DEVELCODE - Teste cadastro básico usuário
-          </a>
+          </Link>
           <Link className="btn btn-outline-light" to="/adduser">
             Adicionar
           </Link>
