@@ -48,8 +48,10 @@ export default function EditUser() {
     // Formate a data de nascimento para "yyyy-MM-dd"
     const birthDate = new Date(result.data.birthDate);
     const formattedBirthDate = birthDate.toISOString().split('T')[0];
-    setUser({ ...result.data, birthDate: formattedBirthDate });
-};
+    const imageUrl = URL.createObjectURL(new Blob([result.data.image]));
+
+    setUser({ ...result.data, birthDate: formattedBirthDate, image: imageUrl });
+  };
 
   return (
     <div className="container">
@@ -95,6 +97,12 @@ export default function EditUser() {
                 onChange={(e) => onImageChange(e)}
               />
             </div>
+            {image && (
+              <div className="mb-3">
+                <label className="form-label">Imagem atual:</label>
+                <img src={image} alt="User" style={{ width: '100%', height: 'auto' }} />
+              </div>
+            )}
             <button type="submit" className="btn btn-outline-primary">
               Enviar
             </button>
